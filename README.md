@@ -12,9 +12,8 @@
 2. [요구사항](#reqirements)
 3. [주요 기술 성과](#my)
 4. [프로젝트 회고](#troubleShooting)
-5. [페이지별 기능](#page)
+5. [시연영](#page)
 6. [개발 환경](#env)
-
 <br>
 
 ## 1. <span id="intro">프로젝트 소개</span>
@@ -34,127 +33,92 @@
 📁 서비스: 문자/음성채팅/전화
 
 📁 구독신청: 고인에 대한 기본 정보와 고인과의 대화 내역 업로드(문자: 이미지 또는 텍스트 파일 / 음성채팅,전화: 통화 녹음 파일 또는 동영상 파일)
-
 <br>
   
-## 3. <span id="my">맡은 기능</span>
-#### 기획, 디자인, 프론트엔드, 백엔드
+## 3. <span id="my">주요 기술 성과</span>
+#### 기획, 프론트엔드, 백엔드
 
-### 1. React 기반 성능 최적화 및 커스텀 훅 아키텍처
+### 1. 실시간 음성 통신 파이프라인 아키텍처 설계
 
-**- 문제**
-대용량 경매 데이터와 복잡한 필터링 로직으로 인한 성능 저하 <br>
+**- 문제**<br>
+음성 데이터의 **실시간 처리와 저지연 응답**이 요구되는 복잡한 시스템 구조 <br>
 
 **- 해결**
-- **커스텀 훅 패턴**을 활용한 **비즈니스 로직 분리 및 재사용성 확보**
-- **useMemo 최적화**로 불필요한 렌더링 감소
+- React(클라이언트) ↔ Spring Boot(중계/세션 관리) ↔ FastAPI(음성 AI)로 이어지는 **3-tier 아키텍처 설계**
+- **WebSocket 기반 실시간 양방향 통신** 구현으로 HTTP 요청-응답 방식 대비 **85% 지연시간 단축**
+- **비동기 스트리밍 처리**를 통한 음성 데이터 파이프라인 최적화
 
-### 2. 경매 상태 관리 및 자동화 시스템
-- 경매 예정 → 진행 → 종료 **3단계 경매 상태의 완전 자동 전환 구현** 
-- 서버 시간 동기화 기반 **타이머 시스템 (오차 ±2초 이내)**
-- **상태별 조건부 UI 렌더링 및 사용자 액션 제어**
+**- 성과** <br>
+대화 응답 대기시간 **1~3초** 이내 달성, 실시간 상호작용 사용자 경험 구현
 
-### 3. SPA 환경 브라우저 히스토리 캐시 시스템
+### 2. TTS 성능 최적화 및 브라우저 호환성 확보
 
-**문제** <br> 
-Single Page Application 환경에서 뒤로가기/새로고침 시 상태 손실
+**- 문제**<br>
+SparkTTS의 처리 지연으로 인한 사용자 경험 저하 (**평균 10~20초** 응답 시간) <br>
 
-**해결**
-- **LocalStorage + API 동기화** 하이브리드 캐싱 전략 도입
-- **`popstate` 이벤트 감지**를 통한 **브라우저 히스토리 상태 추적**
-- 최근 본 게시물 **캐시 및 상태 강제 갱신 로직 개발**
+**- 해결**
+- ElevenLabs TTS API를 WebSocket 스트리밍 방식으로 전환하여 **음성 합성 속도 3~6배 개선**
+- FFMPEG을 활용한 **실시간 WebM 변환 및 MediaSource API 통합**
+- 오디오 청크 스트리밍으로 Windows/Mac/iOS/Chrome/Safari 등 **주요 플랫폼 호환성 확보**
 
-**성과** <br>
-**사용자 페이지 이동 경험 완전한 상태 복원, UX 만족도 향상**
-
-### 4. 권한 기반 UI 및 자동화된 후처리 시스템
-- 관리자/일반 사용자 **권한 분리 및 조건부 UI 렌더링**
-- 경매 종료 후 **낙찰자 모달 자동 표시** 및 **채팅 종료 처리**
-- 미낙찰 참여자 대상 **자동 환불 API** 호출 시스템
-- **상태 플래그** 도입으로 **중복 실행 방지** 로직 구현
-- 경매 종료 → 낙찰자 결정 → 알림 발송 → 환불 처리의 **완전 자동화**
+### 3. End-to-End 음성 대화 자동화 시스템
+- STT → LLM → TTS → 오디오 재생의 **완전 자동화 파이프라인 구축**
+- 진폭 분석 기반 **무음 감지 알고리즘**으로 **발화 종료 자동 인식**
+- **사용자 조작 최소화**를 통한 자연스러운 대화 플로우 구현
+- MediaRecorder/RecordRTC API **환경별 분기 처리로 크로스 플랫폼 지원**
 
 <br>
 
 ## 4. <span id="troubleShooting">프로젝트 회고</span>
-#### 1. 성과
-프로젝트를 통해 React, Spring Boot 기술 스택을 실제 개발에 적용하며 소중한 경험을 쌓았습니다. <br>
+#### 1. 협업 및 일정 관리
+팀원들과 데일리 스크럼을 진행하여, 각자의 진행 상황과 당일 목표, 장애 요인을 공유했습니다.<br>
+이 과정을 통해 팀 전체의 진행 상황을 빠르게 파악하고, 이슈 발생 시 즉각적으로 협력할 수 있었습니다.<br>
+회의 빈도를 높여 기능별 인터페이스, API 명세, 인프라 구조 등에서 오해나 중복 작업을 최소화할 수 있었습니다. <br>
 
-#### 2. 아쉬운 점
-프로젝트 완성에만 급급했던 나머지, 각 기능이 어떤 원리로 동작하는지, 어떻게 최적화 할 수 있는 지에 대한 깊이 있는 고민이 부족했습니다. <br>
-또한 개발 과정에서 내가 왜 이런 기술적 선택을 했는지, 어떤 의도로 설계 했는지를 체계적으로 기록하지 않아 나중에 코드를 다시 봤을 때 혼란스러웠습니다.<br>
-문제가 생겼을 때도 당장 해결하는 데만 집중했지, 다양한 해결 방안이나 근본적인 원인까지는 파고들지 못했습니다.
+#### 2. 기술적 성장
+**- 새로운 언어/기술에 대한 자신감** <br>
+Python, AI 관련 기술(FastAPI, STT, TTS, LLM 등)은 처음이었지만, 직접 파이프라인을 설계·구현하며 **새로운 언어와 프레임워크에 대한 두려움이 사라졌습니다.**<br>
+앞으로도 새로운 기술에 대한 도전을 두려워하지 않고, 빠르게 학습·적용할 수 있다는 자신감을 얻었습니다.
+
+**- 이해 중심 개발** <br>
+다른 프로젝트들에 비해, 이번에는 **각 기술의 원리와 동작 방식을 이해하며 개발**을 진행해, <br>
+문제 발생 시 원인을 빠르게 진단하고 해결할 수 있었습니다.
 
 #### 3. 개선하고 싶은 점
-**- 체계적 문서화 습관 확립**
+**- WebSocket 세션 관리 미흡 (QA 과정에서 발견)**
 <br>
-개발하면서 내린 모든 의사 결정과 기술적 선택의 이유를 기록하고, 구현 의도와 설계 배경을 명확히 문서화할 필요성을 느꼈습니다.
+React → Spring Boot → Python으로의 WebSocket 세션 관리는 꼼꼼하게 설계했으나 반대로 Python에서 받은 오디오 응답을 Spring Boot → React로 전달할 때는 세션을 제대로 매핑하지 않고, 브로드캐스트 방식으로 전송했습니다. <br>
+이로 인해 프로젝트 막바지 QA 과정에서 여러 사용자가 동시에 접속할 때 오디오 응답이 엉뚱한 사용자에게 전달되는 네트워크 혼선을 발견했습니다.
 
-**- 기술적 이해도 향상**
+**- 개선하지 못한 아쉬움**
 <br>
-단순히 코드가 돌아가게 만드는 것을 넘어서 왜 이렇게 동작하는지, 어떻게 하면 더 좋게 만들 수 있는 지를 생각하며 기능을 구현해야 문제를 만났을 때도 여러 해결책을 검토하고 근본적인 원인을 분석할 수 있음을 느꼈습니다.<br>
-빠른 개발도 중요하지만, 그 과정에서 기술적 이해도를 높이는 것도 함께 챙기고자 합니다.
+해당 문제는 발표 준비와 일정이 겹쳐, 실제 배포 전에는 구조 개선을 하지 못한 채로 프로젝트를 마무리하게 되었습니다. <br>
+만약 일정에 더 여유가 있었다면, Spring Boot에서 사용자별 세션을 명확히 매핑하고, 오디오 응답을 개별 사용자에게만 전송하는 구조로 개선했을 것입니다.
 
-#### 4. 결론
-새로운 기술 스택을 익히고 실무 경험을 쌓는 데 성공했으나, 문서화와 원리 이해라는 개선점을 발견할 수 있었습니다. 
-
-향후 프로젝트에서는 기능 구현과 함께 체계적인 학습 기록과 깊이 있는 기술 탐구를 병행하여 더욱 의미 있는 개발 경험을 쌓아나가고자 합니다.
+**- 향후 개선 방향**
+<br>
+실시간 대화 서비스에서 세션 관리의 중요성을 다시 한 번 크게 느꼈으며, <br>
+앞으로는 설계 단계에서부터 양방향 세션 매핑과 예외 상황(동시 접속, 연결 해제 등)까지 꼼꼼히 고려하는 습관을 들이고자 합니다.
 
 <br>
 
-## 5. <span id="page">페이지별 기능</span>
-| **메인페이지** | **로그인** |
-| :------------: | :------------: |
-| <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80.png?raw=true" alt="mainpage" /> | <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EB%A1%9C%EA%B7%B8%EC%9D%B8.png?raw=true" alt="login" /> |
-| 최근 본 게시글/ 메인 이미지를 통해 해당 아이템 상세보기/<br> 캐쉬충전/ 로그인/ 로그아웃 | 아이디 저장/ 회원가입/ 아이디, 비밀번호 찾기 |
-
-| **회원가입** | **회원가입 정보입력** |
-| :------------: | :------------: |
-| <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85.png?raw=true" alt="signup" /> | <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85%20%EC%A0%95%EB%B3%B4%EC%9E%91%EC%84%B1.png?raw=true" alt="signup input" /> |
-| 약관동의 후 정보입력 | 정보 입력/ 유효성 평가 후 회원가입 |
-
-| **게시글 리스트** | **상세페이지** |
-| :------------: | :------------: |
-| <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EA%B2%8C%EC%8B%9C%EA%B8%80%20%EB%A6%AC%EC%8A%A4%ED%8A%B8.png?raw=true" alt="board" /> | <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EA%B2%8C%EC%8B%9C%EA%B8%80%20%EC%83%81%EC%84%B8%ED%8E%98%EC%9D%B4%EC%A7%80.png?raw=true" alt="board detail"/> |
-| 검색/ 카테고리별 보기/ 상태별 보기 | 해당 경매품 이미지/ 상세 정보/ 즐겨찾기/ 경매상태 확인 |
-
-| **라이브 경매** | **라이브 경매 후** |
-| :------------: | :------------: |
-| <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EB%9D%BC%EC%9D%B4%EB%B8%8C.png?raw=true" alt="live auction" /> | <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EB%82%99%EC%B0%B0.png?raw=true" alt="after live auction"/> |
-| 경매 10분 전부터 라이브 게시판에 업로드 되어 채팅 활성화 <br> 경매 시작 후 5분 동안 입찰버튼 활성화로 실시간 입찰 가능 <br> 현재 가진 캐쉬보다 입찰가가 높다면 입찰 불가능 <br>채팅과 입찰은 로그인 후 가능 | 낙찰자에겐 낙찰 안내, 그 외 입찰자에겐 환불처리 <br> 라이브 경매가 끝난 직후에 입찰 버튼 비활성화, 채팅만 가능 <br> 경매 종료 5분 후에 게시글 상태 변경으로 채팅도 불가능 하며 카테고리에서 정보만 확인가능  |
-
-| **게시글 작성** | **게시글 수정** |
-| :------------: | :------------: |
-| <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EA%B2%8C%EC%8B%9C%EA%B8%80%20%EC%9E%91%EC%84%B1.png?raw=true" alt="write post" /> |  <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EA%B2%8C%EC%8B%9C%EA%B8%80%20%EC%88%98%EC%A0%95.png?raw=true" alt="edit post" /> |
-| 카테고리, 경매 날짜, 입찰 시작가, 상세 설명, 이미지를 모두 작성해야 업로드 가능 <br> 날짜는 현재로부터 7일 후 부터 선택가능 <br> 이미지는 개별 삭제, 전체삭제 가능 | 관리자로 로그인 후 수정 가능/ 수정, 삭제, 승인 |
-
-| **고객센터** | **1:1문의** |
-| :------------: | :------------: |
-| <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EA%B2%8C%EC%8B%9C%EA%B8%80%20%EC%9E%91%EC%84%B1.png?raw=true" alt="write post" /> | <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EA%B2%8C%EC%8B%9C%EA%B8%80%EC%9E%91%EC%84%B12.png?raw=true" alt="write post"/> |
-| 카테고리, 경매 날짜, 입찰 시작가, 상세 설명, 이미지를 모두 작성해야 업로드 가능 | 날짜는 현재로부터 7일 후 부터 선택가능 <br> 이미지는 개별 삭제, 전체삭제 가능 |
-
-| **마이페이지** | **관리자페이지** |
-| :------------: | :------------: |
-| <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EB%A7%88%EC%9D%B4%ED%8E%98%EC%9D%B4%EC%A7%80.png?raw=true" alt="mypage" /> | <img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EA%B4%80%EB%A6%AC%EC%9E%90%ED%8E%98%EC%9D%B4%EC%A7%80.PNG?raw=true" alt="admin page"/> |
-| 즐겨찾기/ 정보 확인, 수정/ 신청 경매품/ 낙찰 경매품 확인 | 1:1문의 확인 후 답변/경매품 신청으로 들어 온 게시글 확인/ 유저 정보 확인 |
+## 5. <span id="page">시연 영상</span>
+구글 드라이브에서 시연영상 확인 가능합니다.
+[시연영상](https://drive.google.com/drive/folders/1Ct50a7HpOpG98Ky1HfVK2Qf2JtT6eo8d?usp=drive_link)
 
 <br>
 
 ## 6. <span id="env">개발 기간 및 환경</span>
 
 #### 프로젝트 기간
-24.11.11 ~ 24. 11. 29
-(4인 팀 프로젝트)
+2025.03.20 – 2025.04.30
+(5인 팀 프로젝트)
 
 #### Architecture
-<img src="https://github.com/gangnam-auction/gangnam-auction/blob/main/FrontEnd/auction-front/src/assets/%EC%95%84%ED%82%A4%ED%85%8C%EC%B2%98.png?raw=true" alt="Architecture" />
+<img width="1214" height="823" alt="다시안녕" src="https://github.com/user-attachments/assets/83bc24be-d070-4eb0-b2ec-8fffbdcb87c4" />
 
-#### UML
-<img src="https://github.com/gangnam-auction/gangnam-auction/blob/main/FrontEnd/auction-front/src/assets/uml.png?raw=true" alt="UML"/>
+#### User Flow
+<img width="1920" height="1080" alt="다시, 안녕_유저플로우" src="https://github.com/user-attachments/assets/366a5c28-65b8-4814-ab59-444861ec6c41" />
 
 #### ERD
-<img src="https://github.com/gangnam-auction/gangnam-auction/blob/main/FrontEnd/auction-front/src/assets/ER.png?raw=true" alt="ERD" />
-
-
-#### 기술 스택
-<img src="https://github.com/gangnam-auction/gangnam-auction/blob/won/FrontEnd/auction-front/src/assets/readMe_%EA%B8%B0%EC%88%A0%EC%8A%A4%ED%83%9D.png?raw=true" alt="stack" style="width:80%"/>
+<img width="1626" height="1553" alt="다시안녕_ERD" src="https://github.com/user-attachments/assets/9f882675-a70e-4bb4-af8e-b87693382c5c" />
