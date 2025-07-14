@@ -104,7 +104,7 @@ React → Spring Boot → Python으로의 WebSocket 세션 관리는 꼼꼼하�
 
 ## 5. <span id="page">시연 영상</span>
 구글 드라이브에서 시연영상 확인 가능합니다.
-[시연영상](https://drive.google.com/drive/folders/1Ct50a7HpOpG98Ky1HfVK2Qf2JtT6eo8d?usp=drive_link)
+[시연영상](https://drive.google.com/drive/folders/1Ct50a7HpOpG98Ky1HfVK2Qf2JtT6eo8d?usp=sharing)
 
 <br>
 
