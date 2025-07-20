@@ -46,7 +46,7 @@
 **- 해결**
 - React(클라이언트) ↔ Spring Boot(중계/세션 관리) ↔ FastAPI(음성 AI)로 이어지는 **3-tier 아키텍처 설계**
 - **WebSocket 기반 실시간 양방향 통신** 구현으로 HTTP 요청-응답 방식 대비 **85% 지연시간 단축**
-- **비동기 스트리밍 처리**를 통한 음성 데이터 파이프라인 최적화
+- **비동기 스트리밍 처리**를 통한 **음성 데이터 파이프라인 최적화**
 
 **- 성과** <br>
 대화 응답 대기시간 **1~3초** 이내 달성, 실시간 상호작용 사용자 경험 구현
@@ -54,12 +54,12 @@
 ### 2. TTS 성능 최적화 및 브라우저 호환성 확보
 
 **- 문제**<br>
-SparkTTS의 처리 지연으로 인한 사용자 경험 저하 (**평균 10~20초** 응답 시간) <br>
+SparkTTS의 처리 지연으로 인한 사용자 경험 저하 <br>
 
 **- 해결**
-- ElevenLabs TTS API를 WebSocket 스트리밍 방식으로 전환하여 **음성 합성 속도 3~6배 개선**
-- FFMPEG을 활용한 **실시간 WebM 변환 및 MediaSource API 통합**
-- 오디오 청크 스트리밍으로 Windows/Mac/iOS/Chrome/Safari 등 **주요 플랫폼 호환성 확보**
+- SparkTTS CPU 60초 → GPU 10 ~ 20초 → ElevenLabs TTS WebSocket **1~3초 응답** 달성으로 **20배 이상 성능 개선**
+  및 Windows/Mac/iOS/Chrome/Safari 등 **주요 플랫폼 완전 호환성** 달성
+- SparkTTS GPU 활용 최적화 적용 후 ElevenLabs TTS WebSocket 스트리밍 방식으로 완전 전환, **FFMPEG 실시간 WebM 변환 및 MediaSource API 통합**
 
 ### 3. End-to-End 음성 대화 자동화 시스템
 - STT → LLM → TTS → 오디오 재생의 **완전 자동화 파이프라인 구축**
